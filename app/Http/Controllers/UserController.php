@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use Illuminate\Contracts\Session\Session;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 
@@ -40,18 +40,40 @@ class UserController extends Controller
             'email' => 'required',
             'password' => 'required'
         ]);
+
         $credentials=$req->only('email','password');
-        if(Auth::attempt($credentials)){
+        if(Auth::attempt($credentials)){    
             return redirect('dashboard');
         }
         return redirect('login')->with('success', 'Login details are not valid!!');
 
     }
+    
     function dashboard(){
         if (Auth::check()) {
+            // $user=Auth::user();
+// 
+            // Session::put('user',$user);
+
             return view('dashboard');
         }
         return redirect('login')->with('success','you are not allowed to access!!');
+
+    }
+
+    public function edit($id)
+    {
+        $data = User::find($id);
+        return view('edit', compact('data'));
+    }
+    function validate_edit(Request $req,$id){
+        $user = User::find($id);
+        $user->name = $req->input('name');
+        $user->email = $req->input('email');
+        $user->password = Hash::make($req->input('password'));
+        $user->update();
+        return redirect('dashboard')->with('success','Record Updated Successfully!!');
+        
 
     }
     function logout(){

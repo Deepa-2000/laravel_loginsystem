@@ -32,4 +32,8 @@ Route::controller(UserController::class)->group(function(){
 
     Route::get('/dashboard','dashboard')->name('dashboard');
 
+    Route::get('/edit/{id}','edit')->name('edit');
+    
+    Route::put('/validate_edit/{id}','validate_edit')->name('sample.validate_edit');
+
 });
